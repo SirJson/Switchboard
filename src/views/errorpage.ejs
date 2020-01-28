@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('head'); -%>
+
+<body class="error-screen">
+    <div class="content">
+        <div class="terminal">
+            <div id="sc1"></div>
+            <div id="sc2"></div>
+            <div id="sc3"></div>
+            <div id="sc4"></div>
+            <div id="sc5"></div>
+        </div>
+        <div class="terminal">
+            <h1 class="error">
+                KERNEL PANIC - The request could not be executed
+            </h1>
+        </div>
+    </div>
+
+
+
+    <script>
+        var state = [
+            {
+                target: document.getElementById("sc1")
+            },
+            {
+                target: document.getElementById("sc2")
+            },
+            {
+                target: document.getElementById("sc3")
+            },
+            {
+                target: document.getElementById("sc4")
+            },
+            {
+                target: document.getElementById("sc5")
+            },
+        ];
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+        }
+
+        function scambledStr() {
+            var output = '';
+            var chars = 'ЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѠѡѢѣѤѥѦѧѨѩѪѫѬѭѮѯѰѱѲѳѴѵѶѷѸѹѺѻѼѽѾѿҀҁ҂ҊҋҌҍҎҏҐґҒғҔҕҖҗҘҙҚқҜҝҞҟҠҡҢңҤҥҦҧҨҩҪҫҬҭҮүҰұҲҳҴҵҶҷҸҹҺһҼҽҾҿӀӁӂӃӄӅӆӇӈӉӊӋӌӍӎӏӐӑӒӓӔӕӖӗӘәӚӛӜӝӞӟӠӡӢӣӤӥӦӧӨөӪӫӬӭӮӯӰӱӲӳӴӵӶӷӸӹӺӻӼӽӾӿ�я─п╟п╨п╬п╥я▐п╠я─я▀ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%$?!_()`';
+            var charsCount = chars.length;
+            for (var i = 0; i < getRandomInt(120, charsCount); i++) {
+                output += chars.charAt(Math.floor(Math.random() * charsCount));
+            }
+            return output;
+        }
+
+        function doScramble(time) {
+            for (var i = 0; i < state.length; i++) {
+                if (time > state[i].last + state[i].tick) {
+                    state[i].target.innerHTML = scambledStr();
+                    state[i].last = time;
+                }
+            }
+            window.requestAnimationFrame(doScramble);
+        }
+
+        for (var i = 0; i < state.length; i++) {
+            state[i].last = 0;
+            state[i].tick = getRandomInt(50, 500);
+        }
+
+        window.requestAnimationFrame(doScramble);
+    </script>
+    <%- include('redparticles'); -%>
+</body>
+
+</html>

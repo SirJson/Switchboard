@@ -1,0 +1,91 @@
+html body {
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #262521;
+  color: rgba(170, 170, 170);
+  font-family: "Roboto Mono", monospace;
+}
+
+.error-screen {
+  background-color: #331a18;
+}
+
+.content {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+.terminal {
+  background-color: #21222687;
+  box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
+  padding: 2rem;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
+
+.error {
+  color: rgb(170, 0, 0);
+}
+
+.prompt {
+  color: rgb(0, 170, 0);
+}
+
+.prompt::after {
+  content: "";
+  display: inline-block;
+  background-color: #606060;
+  vertical-align: top;
+  width: 10px;
+  height: 24px;
+  -webkit-animation: blink 1s step-end infinite;
+  animation: blink 1s step-end infinite;
+}
+
+.info {
+  color: rgb(0, 0, 170);
+}
+
+@-webkit-keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
