@@ -4,9 +4,15 @@ A static online bookmark redirect server thing. This application will be your di
 
 ## What you can do with it
 
-It kinda works like a url shortener, but you configure the urls in advance and just have to remember the magic keywords
+It kinda works like a url shortener, but you configure the urls in advance and have to enter the magic keyword at a special api endpoint '/d' (for dail) where `t=<target>`
 
-Or if you want to you can ask the system for all magic keywords with the `/info` endpoint. The magic keyword infodesk will return a raw json array so you could build something around this if you want. Also this endpoint can be disabled if you want.
+A query for your digital operator to connect you to your favorite pizza delivery could look like this:
+
+```http
+https://example.org/d?t=pizza
+```
+
+Or if you want to you can ask the system for all magic keywords with the `!info` query. This query will return a raw json array so you could build your own tools on top of it. If you are not okay with disclosing your pages.json you can disable the `!info` query with `SWB_NO_INFO=true` in your .env
 
 ## Configuration
 
@@ -22,12 +28,17 @@ SWB_HTTPS_TCP=
 SWB_HTTPS_CERT=
 SWB_HTTPS_KEY=
 SWB_UNIX_SOCKET=
+SWB_UNIX_SOCKET_GID=
+SWB_UNIX_SOCKET_UID=
 SWB_NO_INFO=
+SWB_PAGES=http://localhost:8080/pages.json
 ```
 
-Every empty key is ignored. You can also serve this over unix sockets.
+Every empty key is ignored. You can also serve this over unix sockets. 
 
-To disable the `/info` endpoint set SWB_NO_INFO to
+If `SWB_UNIX_SOCKET_GID` and `SWB_UNIX_SOCKET_UID` the node process will try to change the owner of of the socket. This can help in reverse proxy setups. *Please don't just chmod 777 the socket*
+
+To disable the `!info` query add the following to your .env
 
 ```sh
 SWB_NO_INFO=true
@@ -62,6 +73,12 @@ node .
 For a more complete experience you could write a systemd service file that does that for you.
 
 I would advise you to use a reverse proxy like nginx if you want to serve this to the public
+
+## What is basically untested but included
+
+Pretty much all https stuff  and running the http server without any reverse proxy directly online.
+
+The setup I recommend is using the unix socket approach.
 
 ## Why did you create it
 
