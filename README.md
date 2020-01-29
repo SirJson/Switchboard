@@ -34,7 +34,7 @@ SWB_NO_INFO=
 SWB_PAGES=http://localhost:8080/pages.json
 ```
 
-Every empty key is ignored. You can also serve this over unix sockets. 
+Every empty key is ignored. You can also serve this over unix sockets
 
 If `SWB_UNIX_SOCKET_GID` and `SWB_UNIX_SOCKET_UID` the node process will try to change the owner of of the socket. This can help in reverse proxy setups. *Please don't just chmod 777 the socket*
 
@@ -84,4 +84,4 @@ The setup I recommend is using the unix socket approach.
 
 There are url shorteners out there and there is probably a option in your favorite webserver to do something like this. I wanted to have a simple json file to maintain my online bookmarks list so I don't have to search my own stuff on the web all the time
 
-Enjoy :)
+Enjoy!

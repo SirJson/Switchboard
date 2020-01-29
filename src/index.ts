@@ -117,6 +117,9 @@ async function main() {
         }
     }
     else if (unix_socket) {
+        if (fs.existsSync(unix_socket)) {
+            fs.unlinkSync(unix_socket); // This must be our old socket so we better delete it
+        }
         app.listen(unix_socket, async () => {
             console.info('> Using unix sockets!');
             console.info(`> Switchboard listening at ${unix_socket}`);
