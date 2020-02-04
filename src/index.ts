@@ -4,6 +4,9 @@ import path from "path";
 import helmet from "helmet";
 import fs from "fs";
 import axios from 'axios';
+import bodyParser from 'body-parser';
+import * as _sodium from 'libsodium-wrappers';
+
 
 dotenv.config();
 const APPENV = process.env.NODE_ENV;
@@ -31,6 +34,18 @@ async function loadYellowPages() {
     return yellowpages;
 }
 
+async function writePassword(pass: string) {
+    try {
+        await _sodium.ready;
+        const sodium = _sodium;
+        const hashedpw = sodium.crypto_pwhash_str(pass, sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE, sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE);
+        fs.writeFileSync(ADMIN_KEY, hashedpw);
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
 async function main() {
     console.info("Switchboard init...");
 
@@ -42,10 +57,18 @@ async function main() {
     app.set("view engine", "ejs");
 
     app.use(express.static('public'));
+    app.use(bodyParser.urlencoded({ extended: true }));
 
-    app.use(function (req, res, next) {
+    app.use(async function (req, res, next) {
         if (!fs.existsSync(ADMIN_KEY)) {
-            if (req.query['t'] == "!setup") {
+            console.debug(req.path, req.method, req.body);
+            if (req.path == "/setupdata") {
+                if (req.method == "POST") {
+                    await writePassword(req.body.pwa);
+                    res.render("setupok");
+                }
+            }
+            else if (req.query['t'] == "!setup") {
                 res.render("setup");
             }
             else {

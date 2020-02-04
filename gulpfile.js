@@ -12,9 +12,8 @@ const postcss = require('gulp-postcss');
 
 const nodemods = path.join(__dirname, 'node_modules');
 const external = path.join(__dirname, 'extern');
-const cssglob = "src/styles/css/*.css";
-const scssglob = "src/styles/*.scss";
-const termuiscss = "extern/uiterminal/scss/**/*.scss";
+const cssfiles = "src/styles/css/*.css";
+const stylefiles = "src/styles/*.scss";
 const mainstyle = "src/styles/site.scss";
 
 sass.compiler = require('sass');
@@ -33,7 +32,7 @@ function compileSass() {
 
 function postStyles() {
     const includes = [
-        cssglob
+        cssfiles
     ];
     const plugins = [
         autoprefixer(),
@@ -45,11 +44,15 @@ function postStyles() {
         .pipe(dest("public/css"));
 }
 
-const cssTask = series(compileSass, postStyles);
+function copyFonts() {
+    return src(["src/styles/fonts/*.woff", "src/styles/fonts/*.woff2"]).pipe(dest("public/css/fonts"))
+}
+
+const cssTask = series(compileSass, postStyles, copyFonts);
 
 
 function watchCSS() {
-    return watch([scssglob, termuiscss], cssTask)
+    return watch([stylefiles], cssTask)
 }
 
 exports.css = cssTask;

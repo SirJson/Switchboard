@@ -5,8 +5,8 @@
 
 <body>
     <div class="content">
-        <div class="terminal">
-            <h1 class="prompt">$ switchboard.sys -- setup </h1>
+        <div class="setup">
+            <h1>switchboard.sys -- setup</h1>
             <section>
                 <p>Greetings sir or madam, in order to secure this service you must provide an admin password of your
                     choice.</p>
@@ -15,12 +15,11 @@
                 <p>The service will stay offline until a password is set</p>
             </section>
             <hr>
-            <form class="setupform">
+            <form action="/setupdata" class="setupform" method="POST">
                 <label for="pwa">Admin password:</label>
                 <input type="password" id="pwa" name="pwa" required minlength="4" maxlength="8" size="128">
-                <label for="pwb">Repeat admin password:</label>
-                <input type="password" id="pwb" name="pwb" required minlength="4" maxlength="8" size="128">
-                <button>Complete setup</button>
+                <hr>
+                <input type="submit"></input>
             </form>
 
         </div>

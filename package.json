@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
+    "@types/body-parser": "^1.17.1",
     "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
@@ -16,12 +18,13 @@
     "clean": "rimraf dist/*",
     "copy-assets": "ts-node tools/assets.ts",
     "tsc": "tsc",
-    "css": "gulp css",
+    "build-style": "gulp css",
     "build-code": "npm-run-all clean tsc copy-assets",
-    "dev:start": "npm-run-all build-code start",
-    "watch-code": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
+    "code:loop": "npm-run-all build-code start",
+    "watch-code": "nodemon --watch src -e ts,ejs --exec npm run code:loop",
     "watch-style": "gulp watch",
-    "dev": "npm-run-all --parallel watch-code watch-style",
+    "dev:loop": "npm-run-all --parallel watch-code watch-style",
+    "dev": "npm-run-all build-style dev:loop",
     "start": "node dist/index.js"
   },
   "devDependencies": {
@@ -30,9 +33,12 @@
     "@types/helmet": "0.0.45",
     "@types/libsodium-wrappers": "^0.7.7",
     "@types/shelljs": "^0.8.6",
+    "autoprefixer": "^9.7.4",
+    "cssnano": "^4.1.10",
     "fs-extra": "^8.1.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "nodemon": "^2.0.2",
@@ -42,10 +48,7 @@
     "sass": "^1.25.0",
     "shelljs": "^0.8.3",
     "ts-node": "^8.6.2",
-    "typescript": "^3.7.5",
-    "cssnano": "^4.1.10",
-    "autoprefixer": "^9.7.4",
-    "gulp-postcss": "^8.0.0"
+    "typescript": "^3.7.5"
   },
   "browserslist": [
     ">0.2%",

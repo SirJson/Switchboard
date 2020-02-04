@@ -1,5 +1,19 @@
-@use "uiterminal/scss/elements/terminal-form" as termform;
-@use "uiterminal/scss/base/colors.scss" as termcolors;
+$text-color: #f8f8f2;
+$font-size: 16px;
+$fonts: "Lucida Console", "Ubuntu Mono", "SF Mono", Monaco, monospace;
+$setup-bg: #0000aa;
+$term-bg: #121212;
+$button-color: #d3d3d3;
+
+@font-face {
+  font-family: "PxPlus IBM VGA8";
+  src: local("PxPlus IBM VGA8"), local("PxPlus_IBM_VGA8"), url("fonts/PxPlus_IBM_VGA8.woff2") format("woff2"),
+    url("fonts/PxPlus_IBM_VGA8.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  -webkit-font-smoothing: none;
+  font-feature-settings: unset;
+}
 
 html body {
   height: 100vh;
@@ -10,9 +24,9 @@ html body {
 
 body {
   background-color: #262521;
-  color: termcolors.$text;
-  font-family: "Roboto Mono", monospace;
-  font-size: 16px;
+  color: $text-color;
+  font-family: $fonts;
+  font-size: $font-size;
 }
 
 .error-screen {
@@ -29,9 +43,18 @@ body {
 }
 
 .terminal {
-  background-color: #21222687;
-  box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
-  padding: 2rem;
+  background-color: $term-bg;
+  box-shadow: 0 0 24px 0 rgba(65, 63, 56, 0.6), 0 1px 0 0 rgba(65, 63, 56, 0.2);
+}
+
+.setup {
+  background-color: $setup-bg;
+  box-shadow: 0 0 24px 0 rgba(0, 0, 255, 0.6), 0 1px 0 0 rgba(0, 0, 255, 0.2);
+}
+
+.setup,
+.terminal {
+  padding: 8ch;
 }
 
 .background {
@@ -56,8 +79,8 @@ body {
   display: inline-block;
   background-color: #606060;
   vertical-align: middle;
-  width: 10px;
-  height: 24px;
+  width: 1ch;
+  height: 2ch;
   -webkit-animation: prompt-blink 1s step-end infinite;
   animation: prompt-blink 1s step-end infinite;
 }
@@ -101,18 +124,113 @@ body {
   grid-gap: 0.5rem;
 }
 
-.setupform > button {
+.setupform > button,
+input[type="submit"] {
   grid-column: 1/-1;
-  @include termform.button;
 }
 
-.setupform > input[type="text"] .setupform > input[type="password"] {
-  @include termform.text;
+.setupform > hr {
+  grid-column: 1/-1;
+}
+
+input,
+textarea,
+select,
+option,
+button,
+a.button {
+  display: inline-block;
+  font-size: $font-size;
+  padding: 1ch 2ch;
+  min-height: 3ch;
+  background-color: $button-color;
+  color: invert($button-color);
+  border: 0;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px #000;
+  outline: 0;
+}
+
+input,
+select,
+option,
+button,
+a.button {
+  height: 3ch;
+}
+
+button,
+a.button,
+input[type="button"],
+input[type="submit"] {
+  height: auto;
+  padding: 1ch 1ch;
+  height: 4ch;
+  margin-top: 1ch;
+  margin-bottom: 1ch;
+  font-family: $fonts;
+  font-size: $font-size;
+  color: invert($button-color);
+  background-color: $button-color;
+
+  &:before {
+    content: "< ";
+  }
+  &:after {
+    content: " >";
+  }
+
+  &:active {
+    box-shadow: 1px 1px 0px #000;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-transform: uppercase;
+  margin: 0;
+  margin-bottom: 2ch;
+  font-weight: bold;
+}
+
+h1 {
+  overflow: hidden;
+  text-align: center;
+  padding-bottom: 0;
+  &:before,
+  &:after {
+    border-top: 3px double white;
+    background-color: transparent;
+    content: "";
+    display: inline-block;
+    height: 3px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+  }
+  &:before {
+    right: 0.5em;
+    margin-left: -50%;
+  }
+  &:after {
+    left: 0.5em;
+    margin-right: -50%;
+  }
 }
 
 hr {
-  border: 0;
-}
-hr::after {
-  content: "=============";
+  border-top: 1px double #fff;
+  background-color: transparent;
+  height: 3px;
+  margin-top: 2ch;
+  margin-bottom: 2ch;
+  width: 100%;
 }
