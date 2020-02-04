@@ -1,0 +1,3 @@
+[submodule "extern/uiterminal"]
+	path = extern/uiterminal
+	url = https://github.com/SirJson/uiterminal.git
