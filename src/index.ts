@@ -2,27 +2,23 @@ import dotenv from "dotenv";
 import express from "express";
 import path from "path";
 import helmet from "helmet";
-import https from "https";
-import http from "http";
 import fs from "fs";
 import axios from 'axios';
 
 dotenv.config();
-const appenv = process.env.NODE_ENV;
-const http_port = process.env.SWB_HTTP_TCP;
-const https_port = process.env.SWB_HTTPS_TCP;
-const https_cert = process.env.SWB_HTTPS_CERT;
-const https_key = process.env.SWB_HTTPS_KEY;
-const unix_socket = process.env.SWB_UNIX_SOCKET;
-const socket_gid = process.env.SWB_UNIX_SOCKET_GID
-const socket_uid = process.env.SWB_UNIX_SOCKET_UID
-const opt_no_info = process.env.SWB_NO_INFO === "true";
-const pages_src = process.env.SWB_PAGES;
+const APPENV = process.env.NODE_ENV;
+const HTTP_PORT = process.env.SWB_HTTP_TCP;
+const UNIX_SOCKET = process.env.SWB_UNIX_SOCKET;
+const SOCKET_GID = process.env.SWB_UNIX_SOCKET_GID
+const SOCKET_UID = process.env.SWB_UNIX_SOCKET_UID
+const OPT_NOINFO = process.env.SWB_NO_INFO === "true";
+const PAGES_PATH = process.env.SWB_PAGES;
+const ADMIN_KEY = process.env.SWB_ADMIN_KEYPATH;
 
 async function loadYellowPages() {
     let yellowpages = {};
     console.info("Loading the yellow pages...");
-    const response = await axios.get(pages_src);
+    const response = await axios.get(PAGES_PATH);
     if (response.status == 200) {
         yellowpages = response.data;
         console.info("Yellow pages loaded!");
@@ -42,15 +38,30 @@ async function main() {
     const app = express();
 
     app.use(helmet());
-
     app.set("views", path.join(__dirname, "views"));
     app.set("view engine", "ejs");
+
+    app.use(express.static('public'));
+
+    app.use(function (req, res, next) {
+        if (!fs.existsSync(ADMIN_KEY)) {
+            if (req.query['t'] == "!setup") {
+                res.render("setup");
+            }
+            else {
+                res.render("noadmin");
+            }
+        }
+        else {
+            next();
+        }
+    });
 
     app.get("/", (req, res) => {
         res.render("index")
     });
 
-    if (appenv == "development") {
+    if (APPENV == "development") {
         app.get("/kill", (req, res) => {
             res.render("errorpage");
         });
@@ -62,7 +73,15 @@ async function main() {
 
     app.get("/d", (req, res) => {
         if (req.query['t'] == "!info") {
-            if (opt_no_info) {
+            if (OPT_NOINFO) {
+                res.render("forbidden");
+                return;
+            }
+            let data = Object.keys((<any>pages))
+            res.send(data);
+        }
+        else if (req.query['t'] == "!reload") {
+            if (OPT_NOINFO) {
                 res.render("forbidden");
                 return;
             }
@@ -78,8 +97,6 @@ async function main() {
         }
     });
 
-    app.use(express.static('public'));
-
     app.use(function (req, res, next) {
         res.status(404).render("notfound")
     });
@@ -89,44 +106,30 @@ async function main() {
         res.status(500).render('errorpage')
     });
 
-    if (opt_no_info) {
+    if (OPT_NOINFO) {
         console.info("Info desk disabled");
     }
 
     console.info("Choosing serving method...");
 
-    if (http_port) {
-        if (https_port) {
-            const options = {
-                key: fs.readFileSync(https_key),
-                cert: fs.readFileSync(https_cert)
-            }
-            http.createServer(app).listen(http_port)
-            https.createServer(options, app).listen(https_port)
-            console.info('> Using HTTPS');
-            console.info(`> Switchboard bound to TCP Port (HTTP): ${http_port}`);
-            console.info(`> Switchboard bound to TCP Port (HTTPS): ${https_port}`);
+    if (HTTP_PORT) {
+        app.listen(HTTP_PORT, async () => {
+            console.info('> Using HTTP');
+            console.info(`> Switchboard bound to TCP Port:${HTTP_PORT}`);
             pages = await loadYellowPages();
-        }
-        else {
-            app.listen(http_port, async () => {
-                console.info('> Using HTTP');
-                console.info(`> Switchboard bound to TCP Port:${http_port}`);
-                pages = await loadYellowPages();
-            });
-        }
+        });
     }
-    else if (unix_socket) {
-        if (fs.existsSync(unix_socket)) {
-            fs.unlinkSync(unix_socket); // This must be our old socket so we better delete it
+    else if (UNIX_SOCKET) {
+        if (fs.existsSync(UNIX_SOCKET)) {
+            fs.unlinkSync(UNIX_SOCKET); // This must be our old socket so we better delete it
         }
-        app.listen(unix_socket, async () => {
+        app.listen(UNIX_SOCKET, async () => {
             console.info('> Using unix sockets!');
-            console.info(`> Switchboard listening at ${unix_socket}`);
-            if (socket_gid && socket_uid) {
-                const uid = parseInt(socket_uid, 10);
-                const gid = parseInt(socket_gid, 10);
-                fs.chownSync(unix_socket, uid, gid);
+            console.info(`> Switchboard listening at ${UNIX_SOCKET}`);
+            if (SOCKET_GID && SOCKET_UID) {
+                const uid = parseInt(SOCKET_UID, 10);
+                const gid = parseInt(SOCKET_GID, 10);
+                fs.chownSync(UNIX_SOCKET, uid, gid);
             }
             pages = await loadYellowPages();
         });

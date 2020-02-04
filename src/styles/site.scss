@@ -1,3 +1,6 @@
+@use "uiterminal/scss/elements/terminal-form" as termform;
+@use "uiterminal/scss/base/colors.scss" as termcolors;
+
 html body {
   height: 100vh;
   width: 100vw;
@@ -7,8 +10,9 @@ html body {
 
 body {
   background-color: #262521;
-  color: rgba(170, 170, 170);
+  color: termcolors.$text;
   font-family: "Roboto Mono", monospace;
+  font-size: 16px;
 }
 
 .error-screen {
@@ -51,18 +55,18 @@ body {
   content: "";
   display: inline-block;
   background-color: #606060;
-  vertical-align: top;
+  vertical-align: middle;
   width: 10px;
   height: 24px;
-  -webkit-animation: blink 1s step-end infinite;
-  animation: blink 1s step-end infinite;
+  -webkit-animation: prompt-blink 1s step-end infinite;
+  animation: prompt-blink 1s step-end infinite;
 }
 
 .info {
   color: rgb(0, 0, 170);
 }
 
-@-webkit-keyframes blink {
+@-webkit-keyframes prompt-blink {
   0% {
     opacity: 1;
   }
@@ -76,7 +80,7 @@ body {
   }
 }
 
-@keyframes blink {
+@keyframes prompt-blink {
   0% {
     opacity: 1;
   }
@@ -88,4 +92,27 @@ body {
   100% {
     opacity: 1;
   }
+}
+
+.setupform {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: 61.8% 38.3%;
+  grid-gap: 0.5rem;
+}
+
+.setupform > button {
+  grid-column: 1/-1;
+  @include termform.button;
+}
+
+.setupform > input[type="text"] .setupform > input[type="password"] {
+  @include termform.text;
+}
+
+hr {
+  border: 0;
+}
+hr::after {
+  content: "=============";
 }
