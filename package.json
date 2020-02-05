@@ -11,7 +11,6 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "helmet": "^3.21.2",
-    "libsodium-wrappers": "^0.7.6",
     "particlesjs": "^2.2.3"
   },
   "scripts": {
@@ -31,7 +30,6 @@
     "@types/express": "^4.17.2",
     "@types/fs-extra": "^8.0.1",
     "@types/helmet": "0.0.45",
-    "@types/libsodium-wrappers": "^0.7.7",
     "@types/shelljs": "^0.8.6",
     "autoprefixer": "^9.7.4",
     "cssnano": "^4.1.10",
