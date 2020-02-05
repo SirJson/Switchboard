@@ -94,6 +94,9 @@ async function main() {
         app.listen(HTTP_PORT, async () => {
             console.info('> Using HTTP');
             console.info(`> Switchboard bound to TCP Port:${HTTP_PORT}`);
+            if (APPENV == "development") {
+                console.info(`Open http://localhost:${HTTP_PORT} in your browser to start developing!`);
+            }
         });
     }
     else if (UNIX_SOCKET) {
